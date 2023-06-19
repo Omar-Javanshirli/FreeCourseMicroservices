@@ -1,6 +1,8 @@
 {
   "Routes": [
     {
+      //DownStreamPathTemplate Api Getway-den elaqeli microservice geden url-dir.UpSteram Getway sorgunu DownStream Getwaye gonderir.
+      //DownStream qebul etdiyi sorgunu elaqeli microserviclere yonlendirir.
       "DownstreamPathTemplate": "/api/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
@@ -9,6 +11,7 @@
           "Port": 5011
         }
       ],
+      //UpStreamPathTemplate Api Getway-e gelen Url dir. Client sorgunu Upstream Getwaye gonderir.
       "UpstreamPathTemplate": "/services/catalog/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ],
       "UpstreamScheme": "http",

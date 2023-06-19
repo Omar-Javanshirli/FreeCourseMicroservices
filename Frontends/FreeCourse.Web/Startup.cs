@@ -35,6 +35,8 @@ namespace FreeCourse.Web
             services.Configure<ClientSettings>(Configuration.GetSection("ClientSettings"));
             services.Configure<ServiceApiSettings>(Configuration.GetSection("ServiceApiSettings"));
             services.AddHttpContextAccessor();
+
+            //IClientAccessTokenCache dependency inject ede bimek ucun asagidaki kod istifade olunur
             services.AddAccessTokenManagement();
             services.AddSingleton<PhotoHelper>();
             services.AddScoped<ISharedIdentityService, SharedIdentityService>();

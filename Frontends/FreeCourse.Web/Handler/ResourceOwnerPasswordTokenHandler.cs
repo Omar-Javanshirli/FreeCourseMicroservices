@@ -28,28 +28,38 @@ namespace FreeCourse.Web.Handler
 
         protected async override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
+            //ilk once access tokeni elde edirik
+            var accessToken = await _httpContextAccessor.HttpContext.GetTokenAsync
+                (OpenIdConnectParameterNames.AccessToken);
 
+            //sora elde etdiyimiz access tokeni requestin headerina elave edirik
             request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
 
+            //daha sonra gondereceyimiz requestin response izleyirik bize ne qaytracag deye.
             var response = await base.SendAsync(request, cancellationToken);
 
-            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            ////yoxlanisi edirik egerki access token kecersizdirse. refresh token elde edeceyik.
+            if (response is { StatusCode: System.Net.HttpStatusCode.Unauthorized })
             {
+                //Refresh token elde edirik access token kecersiz oldgu ucun 
                 var tokenResponse = await _identityService.GetAccessTokenByRefreshToken();
 
+                //gelen datani yoxalyiriq
                 if (tokenResponse != null)
                 {
-                    request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", tokenResponse.AccessToken);
+                    //refresh token vasitesi ile yeni elde etdiyimiz tokeni requestin headerina elave edirik
+                    request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue
+                        ("Bearer", tokenResponse.AccessToken);
 
+                    //yeiden request gonderirik ve respnse izleyirik
                     response = await base.SendAsync(request, cancellationToken);
                 }
             }
 
-            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-            {
+            //eger yene bize elde etdiytimiz yeni access tokennende Unauthorize gelibse demek token kecersizdir
+            //ve logglama edirik
+            if (response is { StatusCode: System.Net.HttpStatusCode.Unauthorized })
                 throw new UnAuthorizeException();
-            }
 
             return response;
         }
