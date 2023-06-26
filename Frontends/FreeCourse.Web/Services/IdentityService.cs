@@ -10,7 +10,6 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text.Json;
@@ -156,7 +155,8 @@ namespace FreeCourse.Web.Services
             {
                 new AuthenticationToken{ Name=OpenIdConnectParameterNames.AccessToken,Value=token.AccessToken},
                 new AuthenticationToken{ Name=OpenIdConnectParameterNames.RefreshToken,Value=token.RefreshToken},
-                new AuthenticationToken{ Name=OpenIdConnectParameterNames.ExpiresIn,Value= DateTime.Now.AddSeconds(token.ExpiresIn).ToString("o",CultureInfo.InvariantCulture)}
+                new AuthenticationToken{ Name=OpenIdConnectParameterNames.ExpiresIn,
+                    Value= DateTime.Now.AddSeconds(token.ExpiresIn).ToString("o",CultureInfo.InvariantCulture)}
             });
 
             authenticationProperties.IsPersistent = signinInput.IsRemember;
