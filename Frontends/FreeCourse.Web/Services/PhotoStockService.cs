@@ -21,14 +21,36 @@ namespace FreeCourse.Web.Services
             _httpClient = httpClient;
         }
 
-        public Task<bool> DeletePhoto(string photoUrl)
+        public async Task<bool> DeletePhoto(string photoUrl)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.DeleteAsync($"photos?photoUrl={photoUrl}");
+            return response.IsSuccessStatusCode;
         }
 
-        public Task<PhotoViewModel> UploadPhoto(IFormFile photo)
+        public async Task<PhotoViewModel> UploadPhoto(IFormFile photo)
         {
-            throw new NotImplementedException();
+            if (photo == null || photo.Length <= 0)
+                return null;
+
+            var randomFileName = $"{Guid.NewGuid().ToString()}{Path.GetExtension(photo.FileName)}";
+
+            using var ms = new MemoryStream();
+
+            //byte seklinde copyalama edirik
+            await photo.CopyToAsync(ms);
+
+            //contentimizi yaradirig
+            var multipartContent = new MultipartFormDataContent();
+            //byte formatinda contentin icine sekili elave edirik.
+            multipartContent.Add(new ByteArrayContent(ms.ToArray()), "photo", randomFileName);
+
+            //post sorgusu heyata keciririk
+            var response = await _httpClient.PostAsync("photos", multipartContent);
+
+            if (response is { IsSuccessStatusCode: false })
+                return null;
+
+            return await response.Content.ReadFromJsonAsync<PhotoViewModel>();
         }
     }
 }
