@@ -1,4 +1,5 @@
 ﻿using FreeCourse.Shared.Dtos;
+using FreeCourse.Web.Helpers;
 using FreeCourse.Web.Models.Catalogs;
 using FreeCourse.Web.Services.Interfaces;
 using System.Collections.Generic;
@@ -12,11 +13,13 @@ namespace FreeCourse.Web.Services
     {
         private readonly HttpClient httpClient;
         private readonly IPhotoStockService photoStockService;
+        private readonly PhotoHelper photoHelper;
 
-        public CatalogService(HttpClient httpClient, IPhotoStockService photoStockService)
+        public CatalogService(HttpClient httpClient, IPhotoStockService photoStockService, PhotoHelper photoHelper)
         {
             this.httpClient = httpClient;
             this.photoStockService = photoStockService;
+            this.photoHelper = photoHelper;
         }
 
         public async Task<bool> CreateCourseAsync(CourseCreateInput courseCreateInput)
@@ -59,6 +62,13 @@ namespace FreeCourse.Web.Services
 
             //elde etdiyimiz data ni json formatda oxuya bilmek ucun.
             var responseSuccess = await response.Content.ReadFromJsonAsync<Response<List<CourseViewModel>>>();
+
+            responseSuccess.Data.ForEach(x =>
+            {
+                //x.picture elave edilen data => http://localhost:5012/services/photostock/x.picture
+                x.Picture = this.photoHelper.GetPhotoStockUrl(x.Picture);
+            });
+
             return responseSuccess.Data;
         }
 
@@ -71,6 +81,11 @@ namespace FreeCourse.Web.Services
 
             //elde etdiyimiz data ni json formatda oxuya bilmek ucun.
             var responseSuccess = await response.Content.ReadFromJsonAsync<Response<List<CourseViewModel>>>();
+            responseSuccess.Data.ForEach(x =>
+            {
+                x.Picture = this.photoHelper.GetPhotoStockUrl(x.Picture);
+            });
+
             return responseSuccess.Data;
         }
 
