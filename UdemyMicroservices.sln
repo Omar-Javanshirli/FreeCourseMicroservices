@@ -58,7 +58,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontends", "Frontends", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FreeCourse.Web", "Frontends\FreeCourse.Web\FreeCourse.Web.csproj", "{6E1012DF-8FF1-40E4-B7C7-64C77750743F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PhotoSrock", "PhotoSrock", "{D2CDA014-0E4C-4F20-ABD3-FDFF3A00C141}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PhotoStock", "PhotoStock", "{D2CDA014-0E4C-4F20-ABD3-FDFF3A00C141}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreeCourse.Services.PhotoStock", "FreeCourse.Services.PhotoStock\FreeCourse.Services.PhotoStock.csproj", "{0B2C9CBD-9A48-4B42-BF4B-79290B7486BE}"
 EndProject
