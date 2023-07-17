@@ -10,7 +10,6 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text.Json;
@@ -25,7 +24,8 @@ namespace FreeCourse.Web.Services
         private readonly ClientSettings _clientSettings;
         private readonly ServiceApiSettings _serviceApiSettings;
 
-        public IdentityService(HttpClient client, IHttpContextAccessor httpContextAccessor, IOptions<ClientSettings> clientSettings, IOptions<ServiceApiSettings> serviceApiSettings)
+        public IdentityService(HttpClient client, IHttpContextAccessor httpContextAccessor, 
+            IOptions<ClientSettings> clientSettings, IOptions<ServiceApiSettings> serviceApiSettings)
         {
             _httpClient = client;
             _httpContextAccessor = httpContextAccessor;
@@ -42,9 +42,7 @@ namespace FreeCourse.Web.Services
             });
 
             if (disco.IsError)
-            {
                 throw disco.Exception;
-            }
 
             var refreshToken = await _httpContextAccessor.HttpContext.GetTokenAsync(OpenIdConnectParameterNames.RefreshToken);
 
@@ -116,9 +114,7 @@ namespace FreeCourse.Web.Services
             });
 
             if (disco.IsError)
-            {
                 throw disco.Exception;
-            }
 
             var passwordTokenRequest = new PasswordTokenRequest
             {
@@ -134,9 +130,7 @@ namespace FreeCourse.Web.Services
             if (token.IsError)
             {
                 var responseContent = await token.HttpResponse.Content.ReadAsStringAsync();
-
                 var errorDto = JsonSerializer.Deserialize<ErrorDto>(responseContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
                 return Response<bool>.Fail(errorDto.Errors, 400);
             }
 
@@ -149,9 +143,7 @@ namespace FreeCourse.Web.Services
             var userInfo = await _httpClient.GetUserInfoAsync(userInfoRequest);
 
             if (userInfo.IsError)
-            {
                 throw userInfo.Exception;
-            }
 
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(userInfo.Claims, CookieAuthenticationDefaults.AuthenticationScheme, "name", "role");
 
@@ -162,9 +154,9 @@ namespace FreeCourse.Web.Services
             authenticationProperties.StoreTokens(new List<AuthenticationToken>()
             {
                 new AuthenticationToken{ Name=OpenIdConnectParameterNames.AccessToken,Value=token.AccessToken},
-                   new AuthenticationToken{ Name=OpenIdConnectParameterNames.RefreshToken,Value=token.RefreshToken},
-
-                      new AuthenticationToken{ Name=OpenIdConnectParameterNames.ExpiresIn,Value= DateTime.Now.AddSeconds(token.ExpiresIn).ToString("o",CultureInfo.InvariantCulture)}
+                new AuthenticationToken{ Name=OpenIdConnectParameterNames.RefreshToken,Value=token.RefreshToken},
+                new AuthenticationToken{ Name=OpenIdConnectParameterNames.ExpiresIn,
+                    Value= DateTime.Now.AddSeconds(token.ExpiresIn).ToString("o",CultureInfo.InvariantCulture)}
             });
 
             authenticationProperties.IsPersistent = signinInput.IsRemember;
