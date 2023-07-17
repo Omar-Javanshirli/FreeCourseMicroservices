@@ -19,7 +19,8 @@ namespace FreeCourse.Web.Handler
         private readonly IIdentityService _identityService;
         private readonly ILogger<ResourceOwnerPasswordTokenHandler> _logger;
 
-        public ResourceOwnerPasswordTokenHandler(IHttpContextAccessor httpContextAccessor, IIdentityService identityService, ILogger<ResourceOwnerPasswordTokenHandler> logger)
+        public ResourceOwnerPasswordTokenHandler(IHttpContextAccessor httpContextAccessor, IIdentityService identityService,
+            ILogger<ResourceOwnerPasswordTokenHandler> logger)
         {
             _httpContextAccessor = httpContextAccessor;
             _identityService = identityService;
@@ -51,7 +52,7 @@ namespace FreeCourse.Web.Handler
                     request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue
                         ("Bearer", tokenResponse.AccessToken);
 
-                    //yeiden request gonderirik ve respnse izleyirik
+                    //yeiden request gonderirik ve response izleyirik
                     response = await base.SendAsync(request, cancellationToken);
                 }
             }

@@ -28,9 +28,7 @@ namespace FreeCourse.Web.Controllers
         public async Task<IActionResult> SignIn(SigninInput signinInput)
         {
             if (!ModelState.IsValid)
-            {
                 return View();
-            }
 
             var response = await _identityService.SignIn(signinInput);
 
