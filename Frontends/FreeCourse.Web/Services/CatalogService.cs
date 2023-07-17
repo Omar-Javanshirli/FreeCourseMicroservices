@@ -11,14 +11,21 @@ namespace FreeCourse.Web.Services
     public class CatalogService : ICatalogService
     {
         private readonly HttpClient httpClient;
+        private readonly IPhotoStockService photoStockService;
 
-        public CatalogService(HttpClient httpClient)
+        public CatalogService(HttpClient httpClient, IPhotoStockService photoStockService)
         {
             this.httpClient = httpClient;
+            this.photoStockService = photoStockService;
         }
 
         public async Task<bool> CreateCourseAsync(CourseCreateInput courseCreateInput)
         {
+            var resultPhotoService = await this.photoStockService.UploadPhoto(courseCreateInput.PhotoFormFile);
+
+            if (resultPhotoService != null)
+                courseCreateInput.Picture = resultPhotoService.Url;
+
             var response = await this.httpClient.PostAsJsonAsync<CourseCreateInput>("courses", courseCreateInput);
             return response.IsSuccessStatusCode;
         }

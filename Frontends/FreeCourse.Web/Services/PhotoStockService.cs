@@ -50,7 +50,9 @@ namespace FreeCourse.Web.Services
             if (response is { IsSuccessStatusCode: false })
                 return null;
 
-            return await response.Content.ReadFromJsonAsync<PhotoViewModel>();
+            var responseSuccess= await response.Content.ReadFromJsonAsync<Response<PhotoViewModel>>();
+
+            return responseSuccess.Data;
         }
     }
 }

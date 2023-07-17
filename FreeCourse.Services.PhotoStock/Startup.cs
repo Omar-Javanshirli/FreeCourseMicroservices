@@ -59,7 +59,7 @@ namespace FreeCourse.Services.PhotoStock
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
