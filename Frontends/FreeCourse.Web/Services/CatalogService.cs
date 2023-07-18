@@ -98,6 +98,8 @@ namespace FreeCourse.Web.Services
 
             //elde etdiyimiz data ni json formatda oxuya bilmek ucun.
             var responseSuccess = await response.Content.ReadFromJsonAsync<Response<CourseViewModel>>();
+            responseSuccess.Data.StockPictureUrl = this.photoHelper.GetPhotoStockUrl(responseSuccess.Data.Picture);
+
             return responseSuccess.Data;
         }
 
