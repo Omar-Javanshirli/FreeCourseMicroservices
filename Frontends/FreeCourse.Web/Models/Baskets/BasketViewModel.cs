@@ -7,17 +7,12 @@ namespace FreeCourse.Web.Models.Baskets
 {
     public class BasketViewModel
     {
-        public BasketViewModel()
-        {
-            _basketItems = new List<BasketItemViewModel>();
-        }
-
         public string UserId { get; set; }
-
         public string DiscountCode { get; set; }
 
+        //nece faiz endrim olub onu saxlayirig.
         public int? DiscountRate { get; set; }
-        private List<BasketItemViewModel> _basketItems;
+        private List<BasketItemViewModel> _basketItems { get; set; }
 
         public List<BasketItemViewModel> BasketItems
         {
@@ -25,20 +20,22 @@ namespace FreeCourse.Web.Models.Baskets
             {
                 if (HasDiscount)
                 {
-                    //Örnek kurs fiyat 100 TL indirim %10
+                    //Example => kursun qiymeti 100 manatdir endrim ise 10 faizdir
                     _basketItems.ForEach(x =>
                     {
+                        //100 manatin 10 faizin hesablayirig =>10 manat
                         var discountPrice = x.Price * ((decimal)DiscountRate.Value / 100);
+
+                        //daha sonra qiymetden endirim yani 10 manati cixirig => 90 manat
+                        //sondaki iki yuvarlasdirmag ucundur yani vergulden sora 2 xarekter olsun
                         x.AppliedDiscount(Math.Round(x.Price - discountPrice, 2));
                     });
                 }
                 return _basketItems;
             }
-            set
-            {
-                _basketItems = value;
-            }
+            set { _basketItems = value; }
         }
+
 
         public decimal TotalPrice
         {
@@ -47,6 +44,7 @@ namespace FreeCourse.Web.Models.Baskets
 
         public bool HasDiscount
         {
+            //discountCode var ise true yox ise false gaytaracag
             get => !string.IsNullOrEmpty(DiscountCode) && DiscountRate.HasValue;
         }
 

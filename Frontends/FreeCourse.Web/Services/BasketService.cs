@@ -102,7 +102,6 @@ namespace FreeCourse.Web.Services
             var basket = await Get();
 
             if (basket == null)
-
             {
                 return false;
             }
