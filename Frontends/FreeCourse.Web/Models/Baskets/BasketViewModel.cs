@@ -36,7 +36,7 @@ namespace FreeCourse.Web.Models.Baskets
             set { _basketItems = value; }
         }
 
-
+        //Methods
         public decimal TotalPrice
         {
             get => _basketItems.Sum(x => x.GetCurrentPrice);
