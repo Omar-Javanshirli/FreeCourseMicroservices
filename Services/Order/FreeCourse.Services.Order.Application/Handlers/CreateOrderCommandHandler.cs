@@ -4,10 +4,6 @@ using FreeCourse.Services.Order.Domain.OrderAggregate;
 using FreeCourse.Services.Order.Infrastructure;
 using FreeCourse.Shared.Dtos;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,7 +20,8 @@ namespace FreeCourse.Services.Order.Application.Handlers
 
         public async Task<Response<CreatedOrderDto>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            var newAddress = new Address(request.Address.Province, request.Address.District, request.Address.Street, request.Address.ZipCode, request.Address.Line);
+            var newAddress = new Address
+                (request.Address.Province, request.Address.District, request.Address.Street, request.Address.ZipCode, request.Address.Line);
 
             Domain.OrderAggregate.Order newOrder = new Domain.OrderAggregate.Order(request.BuyerId, newAddress);
 
