@@ -6,7 +6,8 @@
         public string CourseId { get; set; }
         public string CourseName { get; set; }
         public decimal Price { get; set; }
-        private decimal? DiscountAppliedPrice { get; set; }
+
+        private decimal? DiscountAppliedPrice;
 
         public decimal GetCurrentPrice
         {
