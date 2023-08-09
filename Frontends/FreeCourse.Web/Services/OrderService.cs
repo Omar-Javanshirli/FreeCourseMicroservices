@@ -62,7 +62,7 @@ namespace FreeCourse.Web.Services
                 var orderItem = new OrderItemCreateInput()
                 {
                     ProductId = x.CourseId,
-                    Price = x.Price,
+                    Price = x.GetCurrentPrice,
                     PictureUrl = "",
                     ProductName = x.CourseName
                 };
@@ -74,7 +74,10 @@ namespace FreeCourse.Web.Services
             if (response is { IsSuccessStatusCode: false })
                 return new OrderCreatedViewModel() { Error = "Siparis olusturulamadi", IsSuccessful = false };
 
-            return await response.Content.ReadFromJsonAsync<OrderCreatedViewModel>();
+            var orderCreatedViewModel = await response.Content.ReadFromJsonAsync<OrderCreatedViewModel>();
+            orderCreatedViewModel.IsSuccessful = true;
+
+            return orderCreatedViewModel;
         }
 
         public async Task<List<OrderViewModel>> GetOrder()
@@ -102,12 +105,12 @@ namespace FreeCourse.Web.Services
 
             basket.BasketItems.ForEach(x =>
             {
-                var orderItem = new OrderItemCreateInput 
-                { 
-                    ProductId = x.CourseId, 
-                    Price = x.GetCurrentPrice, 
-                    PictureUrl = "", 
-                    ProductName = x.CourseName 
+                var orderItem = new OrderItemCreateInput
+                {
+                    ProductId = x.CourseId,
+                    Price = x.GetCurrentPrice,
+                    PictureUrl = "",
+                    ProductName = x.CourseName
                 };
                 orderCreateInput.OrderItems.Add(orderItem);
             });
