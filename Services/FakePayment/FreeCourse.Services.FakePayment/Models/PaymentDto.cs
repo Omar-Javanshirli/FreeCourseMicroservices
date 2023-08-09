@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace FreeCourse.Services.FakePayment.Models
+﻿namespace FreeCourse.Services.FakePayment.Models
 {
     public class PaymentDto
     {

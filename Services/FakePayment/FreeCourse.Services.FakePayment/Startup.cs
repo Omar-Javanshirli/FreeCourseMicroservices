@@ -1,3 +1,4 @@
+﻿using Automatonymous.Graphing;
 using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -30,9 +31,10 @@ namespace FreeCourse.Services.FakePayment
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
             services.AddMassTransit(x =>
             {
-                // Default Port : 5672
+                //RabbitMq ucun port =>  Default Port : 5672
                 x.UsingRabbitMq((context, cfg) =>
                 {
                     cfg.Host(Configuration["RabbitMQUrl"], "/", host =>
@@ -44,8 +46,21 @@ namespace FreeCourse.Services.FakePayment
             });
 
             services.AddMassTransitHostedService();
+
+            //AuthorizationPolicyBuilder, yetkilendirme politikalarını oluşturmak için kullanılan bir yardımcı sınıftır.
+            //Yukarıdaki kodda, RequireAuthenticatedUser metodu ile sadece kimlik doğrulanmış kullanıcıların erişimine izin veren
+            //bir politika oluşturuluyor. Bu, sayfaların veya yönlendirmelerin yalnızca oturum açmış kullanıcılar tarafından erişilebileceği anlamına gelir.
             var requireAuthorizePolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+
+            //Bu kod, JWT (JSON Web Token) ile ilgili bir ayarı düzenler. JSON Web Token'lar, kullanıcı hakkındaki
+            //verileri içerir ve bunlar "claims" olarak adlandırılır. sub ("subject") öneki, JWT içinde kullanıcının benzersiz
+            //tanımlayıcısını temsil eder.
+            //JwtSecurityTokenHandler.DefaultInboundClaimTypeMap özellikle gelen taleplerdeki JWT'deki "claim" türlerini dönüştürmeye
+            //yönelik haritalamayı tutar. Örneğin, "sub" öneki olan bir "claim" gelecekte "
+            //http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier" gibi bir türe dönüşebilir.
+            //Ancak bu kod parçası, "sub" önekinin hangi "claim" türüne dönüştürülmeyeceğini belirtiyor.
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove("sub");
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.Authority = Configuration["IdentityServerURL"];
