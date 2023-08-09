@@ -2,8 +2,6 @@
 using FreeCourse.Web.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace FreeCourse.Web.Controllers
@@ -19,7 +17,8 @@ namespace FreeCourse.Web.Controllers
             _orderService = orderService;
         }
 
-        public async Task<IActionResult> Checkout()
+        [HttpGet]
+        public async Task<IActionResult> Checkout() 
         {
             var basket = await _basketService.Get();
 
@@ -39,7 +38,6 @@ namespace FreeCourse.Web.Controllers
                 var basket = await _basketService.Get();
 
                 ViewBag.basket = basket;
-
                 ViewBag.error = orderSuspend.Error;
 
                 return View();
