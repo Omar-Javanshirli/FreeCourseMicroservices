@@ -74,10 +74,11 @@ namespace FreeCourse.Web.Services
             if (response is { IsSuccessStatusCode: false })
                 return new OrderCreatedViewModel() { Error = "Siparis olusturulamadi", IsSuccessful = false };
 
-            var orderCreatedViewModel = await response.Content.ReadFromJsonAsync<OrderCreatedViewModel>();
-            orderCreatedViewModel.IsSuccessful = true;
-
-            return orderCreatedViewModel;
+            var orderCreatedViewModel = await response.Content.ReadFromJsonAsync<Response<OrderCreatedViewModel>>();
+            orderCreatedViewModel.Data.IsSuccessful = true;
+            
+            await _basketService.Delete();
+            return orderCreatedViewModel.Data;
         }
 
         public async Task<List<OrderViewModel>> GetOrder()
