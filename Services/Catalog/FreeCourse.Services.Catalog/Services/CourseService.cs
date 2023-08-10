@@ -3,13 +3,13 @@ using FreeCourse.Services.Catalog.Dtos;
 using FreeCourse.Services.Catalog.Models;
 using FreeCourse.Services.Catalog.Settings;
 using FreeCourse.Shared.Dtos;
-using Mass = MassTransit;
+using FreeCourse.Shared.Messages;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FreeCourse.Shared.Messages;
+using Mass = MassTransit;
 
 namespace FreeCourse.Services.Catalog.Services
 {
@@ -102,11 +102,10 @@ namespace FreeCourse.Services.Catalog.Services
             var result = await _courseCollection.FindOneAndReplaceAsync(x => x.Id == courseUpdateDto.Id, updateCourse);
 
             if (result == null)
-            {
                 return Response<NoContent>.Fail("Course not found", 404);
-            }
 
-            await _publishEndpoint.Publish<CourseNameChangedEvent>(new CourseNameChangedEvent { CourseId = updateCourse.Id, UpdatedName = courseUpdateDto.Name });
+            await _publishEndpoint.Publish<CourseNameChangedEvent>
+                (new CourseNameChangedEvent { CourseId = updateCourse.Id, UpdatedName = courseUpdateDto.Name });
 
             return Response<NoContent>.Success(204);
         }

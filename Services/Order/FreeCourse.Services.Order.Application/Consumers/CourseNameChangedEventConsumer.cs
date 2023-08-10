@@ -18,7 +18,8 @@ namespace FreeCourse.Services.Order.Application.Consumers
 
         public async Task Consume(ConsumeContext<CourseNameChangedEvent> context)
         {
-            var orderItems = await _orderDbContext.OrderItems.Where(x => x.ProductId == context.Message.CourseId).ToListAsync();
+            var orderItems = await _orderDbContext.OrderItems.Where
+                (x => x.ProductId == context.Message.CourseId).ToListAsync();
 
             orderItems.ForEach(x =>
             {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FreeCourse.Shared.Messages
+﻿namespace FreeCourse.Shared.Messages
 {
     public class CourseNameChangedEvent
     {
