@@ -13,7 +13,6 @@ namespace FreeCourse.Gateway.DelegateHandlers
     {
         private readonly HttpClient _httpClient;
         private readonly IConfiguration _configuration;
-
         private string _accessToken;
 
         public TokenExhangeDelegateHandler(HttpClient httpClient, IConfiguration configuration)
@@ -25,9 +24,7 @@ namespace FreeCourse.Gateway.DelegateHandlers
         private async Task<string> GetToken(string requestToken)
         {
             if (!string.IsNullOrEmpty(_accessToken))
-            {
                 return _accessToken;
-            }
 
             var disco = await _httpClient.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
@@ -36,9 +33,7 @@ namespace FreeCourse.Gateway.DelegateHandlers
             });
 
             if (disco.IsError)
-            {
                 throw disco.Exception;
-            }
 
             TokenExchangeTokenRequest tokenExchangeTokenRequest = new TokenExchangeTokenRequest()
             {
@@ -46,6 +41,7 @@ namespace FreeCourse.Gateway.DelegateHandlers
                 ClientId = _configuration["ClientId"],
                 ClientSecret = _configuration["ClientSecret"],
                 GrantType = _configuration["TokenGrantType"],
+                // TokenExchangeExtensionGrantValidator buradaki ("subject_token") qarsiliq gelir
                 SubjectToken = requestToken,
                 SubjectTokenType = "urn:ietf:params:oauth:token-type:access-token",
                 Scope = "openid discount_fullpermission payment_fullpermission"
@@ -54,19 +50,19 @@ namespace FreeCourse.Gateway.DelegateHandlers
             var tokenResponse = await _httpClient.RequestTokenExchangeTokenAsync(tokenExchangeTokenRequest);
 
             if (tokenResponse.IsError)
-            {
                 throw tokenResponse.Exception;
-            }
 
             _accessToken = tokenResponse.AccessToken;
-
             return _accessToken;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            //Mvc uzerinnen mene gelen tokeni elde edirem. hansiki bu token ile Discount ve Payment Apilere sorgu ata bilmirem.
             var requestToken = request.Headers.Authorization.Parameter;
 
+            //yuxarida elde etdiyimiz token ile yeniden sorgu atiriq ve yeni token elde edirik. hansiki bu token ile
+            //Discont ve payment apilere sorgu ata bileceyik.
             var newToken = await GetToken(requestToken);
 
             request.SetBearerToken(newToken);
