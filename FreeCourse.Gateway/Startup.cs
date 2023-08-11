@@ -23,6 +23,7 @@ namespace FreeCourse.Gateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpClient<TokenExhangeDelegateHandler>();
+
             services.AddAuthentication().AddJwtBearer("GatewayAuthenticationScheme", options =>
             {
                 options.Authority = Configuration["IdentityServerURL"];
